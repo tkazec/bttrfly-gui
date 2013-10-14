@@ -1,0 +1,8 @@
+{
+	"name": "bttrfly",
+	"main": "index.html",
+	"window": {
+		"toolbar": false,
+		"show": false
+	}
+}
