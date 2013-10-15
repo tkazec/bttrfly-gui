@@ -2,7 +2,9 @@
 	"name": "bttrfly",
 	"main": "index.html",
 	"window": {
+		"width": 700,
 		"toolbar": false,
+		"resizable": false,
 		"show": false
 	}
 }
