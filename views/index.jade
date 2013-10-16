@@ -1,1 +1,13 @@
-h1 bttrfly
+h2 Directory
+
+each directory in list
+	div.row-fluid
+		div.span3
+			h4
+				| #{directory.name} 
+				small (#{directory.count})
+		div.span3
+			span #{directory.user}
+		div.span6
+			span.muted #{directory.path}
+			button.close ×

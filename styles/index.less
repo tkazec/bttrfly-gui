@@ -20,16 +20,21 @@
 @sansFontFamily: "Roboto", sans-serif;
 @altFontFamily: "Roboto Slab", sans-serif;
 
-@gridColumnWidth: 40px;
+@headingsFontWeight: 400;
 
 
 ///////////////////////////////////////////////////////////////////////////////
 // global
 ///////////////////////////////////////////////////////////////////////////////
 h1 {
+	border-bottom: 1px solid @hrBorder;
 	font-family: @altFontFamily;
-	font-weight: 400;
-	margin: (@baseLineHeight / 2) @baseLineHeight;
+	margin: 0;
+	padding: @baseLineHeight;
+}
+
+h4 {
+	margin: 0;
 }
 
 var {
