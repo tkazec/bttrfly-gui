@@ -1,6 +1,6 @@
 h2
 	| Directories 
-	small: a#directory-add(href="#") open
+	small: a#directory-open(href="#") open
 
 each name, path in directories
 	a.row-fluid.directory-item(href="#", data-directory=path)
