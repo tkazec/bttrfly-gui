@@ -26,17 +26,66 @@
 ///////////////////////////////////////////////////////////////////////////////
 // global
 ///////////////////////////////////////////////////////////////////////////////
-h1 {
-	border-bottom: 1px solid @hrBorder;
-	font-family: @altFontFamily;
-	margin: 0;
-	padding: @baseLineHeight;
-}
-
+h1,
+h2,
 h4 {
 	margin: 0;
 }
 
+h1 {
+	border-bottom: 1px solid @hrBorder;
+	font-family: @altFontFamily;
+	padding: @baseLineHeight;
+}
+
 var {
 	font-family: @altFontFamily;
+}
+
+.close {
+	transition: opacity 0.1s;
+}
+
+.container-fluid {
+	overflow: auto;
+	padding: @baseLineHeight;
+}
+
+.row-fluid > div {
+	min-height: initial !important;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// directory
+///////////////////////////////////////////////////////////////////////////////
+.directory-item {
+	border-bottom: 1px dashed transparent;
+	cursor: pointer;
+	margin-top: (@baseLineHeight / 2);
+	padding: (@baseLineHeight / 4) 0;
+	transition: border-color 0.1s;
+	
+	&:hover,
+	&:focus {
+		border-bottom-color: @grayLight;
+		outline: 0;
+	}
+	
+	> div > span {
+		vertical-align: middle;
+	}
+}
+
+.directory-name > h4,
+.directory-user > span,
+.directory-path > span {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.directory-path > span {
+	display: inline-block;
+	width: ~"calc(100% - 20px)";
 }

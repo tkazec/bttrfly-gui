@@ -1,13 +1,13 @@
-h2 Directory
+h2
+	| Directory 
+	button.btn#directory-add +
 
 each directory in list
-	div.row-fluid
-		div.span3
-			h4
-				| #{directory.name} 
-				small (#{directory.count})
-		div.span3
-			span #{directory.user}
-		div.span6
-			span.muted #{directory.path}
-			button.close ×
+	div.row-fluid.directory-item(tabindex="0")
+		div.span3.directory-name
+			h4(title=directory.name) #{directory.name}
+		div.span3.directory-user
+			span(title=directory.user) #{directory.user}
+		div.span6.directory-path
+			span(class=directory.valid ? "muted" : "text-error", title=directory.path) #{directory.path}
+			button.close(tabindex="-1") ×
