@@ -1,13 +1,11 @@
 h2
-	| Directory 
-	button.btn#directory-add +
+	| Directories 
+	small: a#directory-add(href="#") open
 
-each directory in list
-	div.row-fluid.directory-item(tabindex="0")
-		div.span3.directory-name
-			h4(title=directory.name) #{directory.name}
-		div.span3.directory-user
-			span(title=directory.user) #{directory.user}
-		div.span6.directory-path
-			span(class=directory.valid ? "muted" : "text-error", title=directory.path) #{directory.path}
+each name, path in directories
+	a.row-fluid.directory-item(href="#", data-directory=path)
+		div.span4.directory-name
+			h4(title=name) #{name}
+		div.span8.directory-path
+			span.muted(title=path) #{path}
 			button.close(tabindex="-1") ×

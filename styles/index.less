@@ -47,6 +47,7 @@ var {
 }
 
 .container-fluid {
+	height: (600px - 81px - (@baseLineHeight * 2));
 	overflow: auto;
 	padding: @baseLineHeight;
 }
@@ -61,7 +62,8 @@ var {
 ///////////////////////////////////////////////////////////////////////////////
 .directory-item {
 	border-bottom: 1px dashed transparent;
-	cursor: pointer;
+	color: @textColor;
+	display: block;
 	margin-top: (@baseLineHeight / 2);
 	padding: (@baseLineHeight / 4) 0;
 	transition: border-color 0.1s;
@@ -69,23 +71,26 @@ var {
 	&:hover,
 	&:focus {
 		border-bottom-color: @grayLight;
+		color: @textColor;
 		outline: 0;
-	}
-	
-	> div > span {
-		vertical-align: middle;
 	}
 }
 
 .directory-name > h4,
-.directory-user > span,
 .directory-path > span {
+	line-height: (@baseLineHeight * 1.1);
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 
-.directory-path > span {
-	display: inline-block;
-	width: ~"calc(100% - 20px)";
+.directory-path {
+	> span {
+		display: inline-block;
+		width: calc(~"100% - 12px -" @fluidGridGutterWidth);
+	}
+	
+	> button {
+		line-height: (@baseLineHeight * 1.1);
+	}
 }
