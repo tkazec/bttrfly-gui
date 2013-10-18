@@ -1,17 +1,31 @@
+///////////////////////////////////////////////////////////////////////////////
+// initializers
+///////////////////////////////////////////////////////////////////////////////
+var bttrfly = require("bttrfly");
 var ff = require("ff");
 var fs = require("fs");
 var gui = require("nw.gui");
 var jade = require("jade");
 var less = require("less");
+var path = require("path");
+
+var state = {
+	directories: {}
+};
 
 var f = ff(function () {
 	fs.readFile("views/index.jade", "utf8", f.slot());
+	
 	fs.readFile("styles/index.less", "utf8", f.slot());
-}, function (view, style) {
-	f.pass(jade.compile(view));
+}, function (template, style) {
+	f.pass(jade.compile(template));
+	
 	less.render(style, f.slot());
-}, function (tmpl, style) {
-	document.getElementById("root").innerHTML = tmpl();
+}, function (template, style) {
+	state.template = template;
+	state.loadDirectories();
+	state.showDirectories();
+	
 	document.getElementById("less").textContent = style;
 }).onError(function (err) {
 	console.log(err);
@@ -19,6 +33,70 @@ var f = ff(function () {
 	gui.Window.get().show();
 });
 
+
+///////////////////////////////////////////////////////////////////////////////
+// helpers
+///////////////////////////////////////////////////////////////////////////////
+state.loadDirectories = function () {
+	JSON.parse(localStorage.directories || "[]").forEach(function (v) {
+		state.directories[v] = {
+			file: v,
+			name: path.basename(v, path.extname(v)),
+			path: path.dirname(v)
+		};
+	});
+};
+
+state.saveDirectories = function () {
+	localStorage.directories = JSON.stringify(Object.keys(state.directories));
+	state.loadDirectories();
+};
+
+state.showDirectories = function () {
+	gui.Window.get().title = "bttrfly";
+	document.getElementById("root").innerHTML = state.template({ directories: state.directories });
+};
+
+state.createDirectory = function (path) {
+	var f = ff(function () {
+		fs.writeFile(path, "{}", f.wait());
+	}).onSuccess(function () {
+		state.openDirectory(path);
+	}).onError(function () {
+		document.getElementById("file-create").click();
+	});
+};
+
+state.openDirectory = function (path) {
+	var f = ff(function () {
+		fs.readFile(path, "utf8", f.slot());
+	}, function (directory) {
+		f.pass(JSON.parse(directory));
+	}).onSuccess(function (directory) {
+		state.directories[path] = true;
+		state.saveDirectories();
+		
+		// ...
+	}).onError(function (err) {
+		delete state.directories[path];
+		state.saveDirectories();
+		state.showDirectories();
+		document.getElementById("file-browse").click();
+	});
+};
+
+state.removeDirectory = function (path) {
+	if (window.confirm("Are you sure you want to remove \"" + state.directories[path].name + "\"?")) {
+		delete state.directories[path];
+		state.saveDirectories();
+		state.showDirectories();
+	}
+};
+
+
+///////////////////////////////////////////////////////////////////////////////
+// events
+///////////////////////////////////////////////////////////////////////////////
 window.addEventListener("dragover", function (evt) {
 	evt.preventDefault();
 }, false);
@@ -26,29 +104,39 @@ window.addEventListener("dragover", function (evt) {
 window.addEventListener("drop", function (evt) {
 	evt.preventDefault();
 	
-	Array.prototype.slice.call(evt.dataTransfer.files).forEach(function (v) {
-		openDirectory(v.path);
-	});
+	for (var i = evt.dataTransfer.files.length; i--;) {
+		state.directories[evt.dataTransfer.files[i].path] = true;
+	}
+	
+	state.saveDirectories();
+	state.openDirectory(evt.dataTransfer.files[0].path);
 }, false);
 
-document.getElementById("file").addEventListener("change", function (evt) {
-	openDirectory(this.value);
+document.getElementById("file-create").addEventListener("change", function (evt) {
+	state.createDirectory(this.value);
+}, false);
+
+document.getElementById("file-browse").addEventListener("change", function (evt) {
+	state.openDirectory(this.value);
 }, false);
 
 document.getElementById("root").addEventListener("click", function handle (evt) {
 	var elem = evt._target || evt.target;
 	var orig = evt.target;
 	
-	if (elem.id === "directory-open") {
-		document.getElementById("file").click();
+	if (elem.id === "directory-create") {
+		document.getElementById("file-create").click();
+	} else if (elem.id === "directory-browse") {
+		document.getElementById("file-browse").click();
 	} else if (elem.classList.contains("directory-item")) {
 		if (orig.classList.contains("close")) {
-			deleteDirectory(elem.dataset.directory);
+			state.removeDirectory(elem.dataset.directory);
 		} else {
-			openDirectory(elem.dataset.directory);
+			state.openDirectory(elem.dataset.directory);
 		}
 	} else {
-		if ((evt._target = cur.parentNode) !== this) {
+		if (elem !== this) {
+			evt._target = elem.parentNode;
 			handle(evt);
 		}
 	}

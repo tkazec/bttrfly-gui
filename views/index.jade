@@ -1,11 +1,14 @@
 h2
 	| Directories 
-	small: a#directory-open(href="#") open
+	small
+		a#directory-create(href="#") create
+		|  / 
+		a#directory-browse(href="#") browse
 
-each name, path in directories
-	a.row-fluid.directory-item(href="#", data-directory=path)
+each file in directories
+	a.row-fluid.directory-item(href="#", data-directory=file.file)
 		div.span4.directory-name
-			h4(title=name) #{name}
+			h4(title=file.name) #{file.name}
 		div.span8.directory-path
-			span.muted(title=path) #{path}
+			span.muted(title=file.file) #{file.path}
 			button.close(tabindex="-1") ×
