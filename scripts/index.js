@@ -18,7 +18,9 @@ var f = ff(function () {
 	
 	fs.readFile("styles/index.less", "utf8", f.slot());
 }, function (template, style) {
-	f.pass(jade.compile(template));
+	f.pass(jade.compile(template, {
+		compileDebug: false
+	}));
 	
 	less.render(style, f.slot());
 }, function (template, style) {

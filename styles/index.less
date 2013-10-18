@@ -26,6 +26,16 @@
 ///////////////////////////////////////////////////////////////////////////////
 // global
 ///////////////////////////////////////////////////////////////////////////////
+a {
+	transition: color 0.1s;
+	
+	&:hover,
+	&:focus {
+		outline: 0;
+		text-decoration: none;
+	}
+}
+
 h1,
 h2,
 h4 {
@@ -83,6 +93,10 @@ var {
 		border-bottom-color: @grayLight;
 		color: @textColor;
 		outline: 0;
+		
+		> .directory-path > button {
+			.close;
+		}
 	}
 }
 
@@ -102,5 +116,6 @@ var {
 	
 	> button {
 		line-height: (@baseLineHeight * 1.1);
+		opacity: 0;
 	}
 }
