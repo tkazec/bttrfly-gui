@@ -1,14 +1,35 @@
-h2
-	| Directories 
-	small
-		a#directory-create(href="#") create
-		|  / 
-		a#directory-browse(href="#") browse
+if view === "list"
+	h2
+		| Directories 
+		small
+			a#directory-create(href="#") create
+			|  / 
+			a#directory-browse(href="#") browse
+	
+	each file in data
+		a.row-fluid.directory-item(href="#", data-directory=file.file)
+			div.span4.directory-name
+				h4(title=file.name) #{file.name}
+			div.span8.directory-path
+				span.muted(title=file.file) #{file.path}
+				button.close(tabindex="-1") ×
 
-each file in directories
-	a.row-fluid.directory-item(href="#", data-directory=file.file)
-		div.span4.directory-name
-			h4(title=file.name) #{file.name}
-		div.span8.directory-path
-			span.muted(title=file.file) #{file.path}
-			button.close(tabindex="-1") ×
+if view === "item"
+	h2
+		| #{title} 
+		small
+			a#directory-back(href="#") back
+	
+	div #{data.user} / #{data.pass}
+	
+	each contact in data.contacts
+		div: var #{contact.phone}
+		
+		each val, key in contact
+			unless key === "phone" || key === "skip"
+				span.label #{key}: #{val}
+				| 
+	
+	div
+		button.btn.btn-primary#directory-send Send
+		button.btn#directory-test Test

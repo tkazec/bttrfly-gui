@@ -37,12 +37,22 @@ var f = ff(function () {
 ///////////////////////////////////////////////////////////////////////////////
 // helpers
 ///////////////////////////////////////////////////////////////////////////////
+state.showView = function (view, title, data) {
+	gui.Window.get().title = title;
+	
+	document.getElementById("root").innerHTML = state.template({
+		view: view,
+		title: title,
+		data: data
+	});
+};
+
 state.loadDirectories = function () {
-	JSON.parse(localStorage.directories || "[]").forEach(function (v) {
-		state.directories[v] = {
-			file: v,
-			name: path.basename(v, path.extname(v)),
-			path: path.dirname(v)
+	JSON.parse(localStorage.directories || "[]").forEach(function (val) {
+		state.directories[val] = {
+			file: val,
+			name: path.basename(val, path.extname(val)),
+			path: path.dirname(val)
 		};
 	});
 };
@@ -53,8 +63,7 @@ state.saveDirectories = function () {
 };
 
 state.showDirectories = function () {
-	gui.Window.get().title = "bttrfly";
-	document.getElementById("root").innerHTML = state.template({ directories: state.directories });
+	state.showView("list", "bttrfly", state.directories);
 };
 
 state.createDirectory = function (path) {
@@ -76,7 +85,7 @@ state.openDirectory = function (path) {
 		state.directories[path] = true;
 		state.saveDirectories();
 		
-		// ...
+		state.showView("item", state.directories[path].name, directory);
 	}).onError(function (err) {
 		delete state.directories[path];
 		state.saveDirectories();
@@ -128,6 +137,8 @@ document.getElementById("root").addEventListener("click", function handle (evt) 
 		document.getElementById("file-create").click();
 	} else if (elem.id === "directory-browse") {
 		document.getElementById("file-browse").click();
+	} else if (elem.id === "directory-back") {
+		state.showDirectories();
 	} else if (elem.classList.contains("directory-item")) {
 		if (orig.classList.contains("close")) {
 			state.removeDirectory(elem.dataset.directory);
