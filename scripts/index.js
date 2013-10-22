@@ -150,7 +150,7 @@ document.getElementById("root").addEventListener("click", function handle (evt) 
 	} else {
 		if (elem !== this) {
 			evt._target = elem.parentNode;
-			handle(evt);
+			handle.call(this, evt);
 		}
 	}
 }, false);
