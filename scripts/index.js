@@ -70,10 +70,10 @@ state.showDirectories = function () {
 
 state.createDirectory = function (path) {
 	var f = ff(function () {
-		fs.writeFile(path, "{}", f.wait());
+		fs.writeFile(path, "{\"contacts\":[]}", f.wait());
 	}).onSuccess(function () {
 		state.openDirectory(path);
-	}).onError(function () {
+	}).onError(function (err) {
 		document.getElementById("file-create").click();
 	});
 };
@@ -82,7 +82,13 @@ state.openDirectory = function (path) {
 	var f = ff(function () {
 		fs.readFile(path, "utf8", f.slot());
 	}, function (directory) {
-		f.pass(JSON.parse(directory));
+		directory = JSON.parse(directory);
+		
+		if (typeof directory === "object" && Array.isArray(directory.contacts)) {
+			f.pass(directory);
+		} else {
+			f.fail();
+		}
 	}).onSuccess(function (directory) {
 		state.directories[path] = true;
 		state.saveDirectories();
