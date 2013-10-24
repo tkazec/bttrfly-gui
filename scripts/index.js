@@ -39,33 +39,46 @@ var f = ff(function () {
 ///////////////////////////////////////////////////////////////////////////////
 // helpers
 ///////////////////////////////////////////////////////////////////////////////
-state.showView = function (view, title, data) {
-	gui.Window.get().title = title;
+state.showView = function (view, opts, data) {
+	gui.Window.get().title = opts.title;
 	
 	document.getElementById("root").innerHTML = state.template({
 		view: view,
-		title: title,
+		opts: opts,
 		data: data
 	});
 };
 
 state.loadDirectories = function () {
-	JSON.parse(localStorage.directories || "[]").forEach(function (val) {
+	var directories = JSON.parse(localStorage.directories || "[]");
+	var passwords = JSON.parse(localStorage.passwords || "[]");
+	
+	directories.forEach(function (val, key) {
 		state.directories[val] = {
 			file: val,
 			name: path.basename(val, path.extname(val)),
-			path: path.dirname(val)
+			path: path.dirname(val),
+			pass: passwords[key]
 		};
 	});
 };
 
 state.saveDirectories = function () {
-	localStorage.directories = JSON.stringify(Object.keys(state.directories));
+	var directories = Object.keys(state.directories);
+	var passwords = directories.map(function (val) {
+		return state.directories[val].pass;
+	});
+	
+	localStorage.directories = JSON.stringify(directories);
+	localStorage.passwords = JSON.stringify(passwords);
+	
 	state.loadDirectories();
 };
 
 state.showDirectories = function () {
-	state.showView("list", "bttrfly", state.directories);
+	state.showView("list", {
+		title: "bttrfly"
+	}, state.directories);
 };
 
 state.createDirectory = function (path) {
@@ -90,10 +103,13 @@ state.openDirectory = function (path) {
 			f.fail();
 		}
 	}).onSuccess(function (directory) {
-		state.directories[path] = true;
+		state.directories[path] = state.directories[path] || true;
 		state.saveDirectories();
 		
-		state.showView("item", state.directories[path].name, directory);
+		state.showView("item", {
+			title: state.directories[path].name,
+			file: state.directories[path]
+		}, directory);
 	}).onError(function (err) {
 		delete state.directories[path];
 		state.saveDirectories();
@@ -121,11 +137,6 @@ window.addEventListener("dragover", function (evt) {
 window.addEventListener("drop", function (evt) {
 	evt.preventDefault();
 	
-	for (var i = evt.dataTransfer.files.length; i--;) {
-		state.directories[evt.dataTransfer.files[i].path] = true;
-	}
-	
-	state.saveDirectories();
 	state.openDirectory(evt.dataTransfer.files[0].path);
 }, false);
 
