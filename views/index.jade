@@ -8,28 +8,53 @@ if view === "list"
 	
 	each file in data
 		a.row-fluid.directory-item(href="#", data-directory=file.file)
-			div.span4.directory-name
+			div.span4.directory-item-name
 				h4(title=file.name) #{file.name}
-			div.span8.directory-path
+			div.span8.directory-item-path
 				span.muted(title=file.file) #{file.path}
 				button.close(tabindex="-1") ×
 
 if view === "item"
 	h2
-		| #{title} 
+		| #{opts.file.name} 
 		small
 			a#directory-back(href="#") back
 	
-	div #{data.user} / #{data.pass}
+	h4 Account
+	div.row-fluid
+		div.span4
+			input.span12(type="email", placeholder="User", value=data.user)
+			span.help-block Email address you sign in to Google Voice with. Most likely your Gmail address.
+		div.span4
+			input.span12(type="password", placeholder="Pass", value=opts.file.pass)
+			span.help-block Password you sign in to Google Voice with. If 2-step verification is on, use an application-specific password.
+		div.span4.text-center
+			label.checkbox.inline
+				input(type="checkbox", checked=!!opts.file.pass)
+				| Save password
+			span.help-block Save your password in bttrfly for future ease of use. Not secure and not recommended.
 	
-	each contact in data.contacts
-		div: var #{contact.phone}
-		
-		each val, key in contact
-			unless key === "phone" || key === "skip"
-				span.label #{key}: #{val}
-				| 
+	h4
+		| Contacts 
+		small (#{data.contacts.length})
+	div#directory-contacts
+		each contact in data.contacts
+			div.directory-contact
+				var #{contact.phone}
+				button.close(tabindex="-1") ×
+				
+				each val, key in contact
+					unless key === "phone" || key === "skip"
+						span.label #{key}: #{val}
+						| 
 	
-	div
-		button.btn.btn-primary#directory-send Send
-		button.btn#directory-test Test
+	h4
+		| Message 
+		small (<span id="directory-count">160</span>)
+	div.row-fluid
+		div.span10
+			textarea(rows="3")
+		div.span2
+			div.span12.btn-group.btn-group-vertical
+				button.btn.btn-info.btn-block#directory-send Send
+				button.btn.btn-block#directory-test Test

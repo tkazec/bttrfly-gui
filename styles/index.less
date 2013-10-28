@@ -37,8 +37,7 @@ a {
 }
 
 h1,
-h2,
-h4 {
+h2 {
 	margin: 0;
 }
 
@@ -48,9 +47,22 @@ h1 {
 	padding: @baseLineHeight;
 }
 
+textarea {
+	box-sizing: border-box;
+	margin: 0;
+	resize: none;
+	width: 100%;
+}
+
 var {
 	font-family: @altFontFamily;
 	font-style: normal;
+}
+
+.checkbox.inline {
+	box-sizing: border-box;
+	height: 30px;
+	margin-bottom: 10px;
 }
 
 .close {
@@ -61,6 +73,10 @@ var {
 	height: (600px - 81px - (@baseLineHeight * 2));
 	overflow: auto;
 	padding: @baseLineHeight;
+}
+
+.help-block {
+	text-align: justify;
 }
 
 .label {
@@ -78,7 +94,7 @@ var {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// directory
+// list
 ///////////////////////////////////////////////////////////////////////////////
 .directory-item {
 	border-bottom: 1px dashed transparent;
@@ -94,28 +110,40 @@ var {
 		color: @textColor;
 		outline: 0;
 		
-		> .directory-path > button {
-			.close;
+		> .directory-item-path > button {
+			.close();
 		}
 	}
 }
 
-.directory-name > h4,
-.directory-path > span {
+.directory-item-name > h4,
+.directory-item-path > span {
 	line-height: (@baseLineHeight * 1.1);
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
+	margin: 0;
+	.text-overflow();
 }
 
-.directory-path {
+.directory-item-path {
 	> span {
 		display: inline-block;
-		width: calc(~"100% - 12px -" @fluidGridGutterWidth);
+		width: ~"calc(100% - 12px - @{fluidGridGutterWidth})";
 	}
 	
 	> button {
 		line-height: (@baseLineHeight * 1.1);
 		opacity: 0;
 	}
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// item
+///////////////////////////////////////////////////////////////////////////////
+#directory-contacts {
+	height: 139px;
+	overflow: auto;
+}
+
+#directory-send {
+	height: 40px;
 }
