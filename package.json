@@ -1,6 +1,7 @@
 {
 	"name": "bttrfly",
 	"main": "index.html",
+	"chromium-args": "--force-compositing-mode",
 	"window": {
 		"width": 800,
 		"height": 600,
