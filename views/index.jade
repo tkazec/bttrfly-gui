@@ -2,15 +2,15 @@ if view === "list"
 	h2
 		| Directories 
 		small
-			a#directory-create(href="#") create
+			a#list-create(href="#") create
 			|  / 
-			a#directory-browse(href="#") browse
+			a#list-browse(href="#") browse
 	
 	each file in data
-		a.row-fluid.directory-item(href="#", data-directory=file.file)
-			div.span4.directory-item-name
+		a.row-fluid.list-item(href="#", data-file=file.file)
+			div.span4.list-item-name
 				h4(title=file.name) #{file.name}
-			div.span8.directory-item-path
+			div.span8.list-item-path
 				span.muted(title=file.file) #{file.path}
 				button.close(tabindex="-1") ×
 
@@ -18,43 +18,57 @@ if view === "item"
 	h2
 		| #{opts.file.name} 
 		small
-			a#directory-back(href="#") back
+			a#item-back(href="#") back
 	
 	h4 Account
 	div.row-fluid
 		div.span4
-			input.span12(type="email", placeholder="User", value=data.user)
+			input.span12#item-user(type="email", placeholder="User", value=data.user)
 			span.help-block Email address you sign in to Google Voice with. Most likely your Gmail address.
 		div.span4
-			input.span12(type="password", placeholder="Pass", value=opts.file.pass)
+			input.span12#item-pass(type="password", placeholder="Pass", value=opts.file.pass)
 			span.help-block Password you sign in to Google Voice with. If 2-step verification is on, use an application-specific password.
 		div.span4.text-center
 			label.checkbox.inline
-				input(type="checkbox", checked=!!opts.file.pass)
+				input#item-pass-save(type="checkbox", checked=!!opts.file.pass)
 				| Save password
 			span.help-block Save your password in bttrfly for future ease of use. Not secure and not recommended.
 	
 	h4
 		| Contacts 
-		small (#{data.contacts.length})
-	div#directory-contacts
-		each contact in data.contacts
-			div.directory-contact
+		small (<span id="item-contacts-count">#{data.contacts.length}</span>)
+	div#item-contacts
+		each contact, index in data.contacts
+			div.well.well-small.item-contact(class=contact.skip && "muted", data-index=index)
 				var #{contact.phone}
-				button.close(tabindex="-1") ×
+				input(type="checkbox", tabindex="-1", checked=!contact.skip)
 				
 				each val, key in contact
 					unless key === "phone" || key === "skip"
-						span.label #{key}: #{val}
-						| 
+						small.text-right #{key}:
+						small.text-left #{val}
+		
+		div.item-contact
+			button.btn.btn-large.text-center +
 	
-	h4
-		| Message 
-		small (<span id="directory-count">160</span>)
-	div.row-fluid
-		div.span10
-			textarea(rows="3")
-		div.span2
-			div.span12.btn-group.btn-group-vertical
-				button.btn.btn-info.btn-block#directory-send Send
-				button.btn.btn-block#directory-test Test
+	div#item-compose
+		h4
+			| Message 
+			small (<span id="item-compose-count">160</span>)
+		div.row-fluid
+			div.span8
+				textarea#item-compose-text(rows="2")
+			div.span4
+				div.span12.btn-group.btn-group
+					button.btn.btn-large#item-send Send
+					button.btn#item-test Test
+	
+	div#item-status
+		h4
+			| Sending... 
+			small (<span id="item-status-count"></span> of <span id="item-status-total"></span>)
+		div.row-fluid
+			div.span8
+				div.progress.progress-info#item-status-bar: div.bar
+			div.span4
+				button.btn.btn-large.btn-block#item-cancel Cancel

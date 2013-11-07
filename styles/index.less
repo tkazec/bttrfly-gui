@@ -79,8 +79,12 @@ var {
 	text-align: justify;
 }
 
-.label {
-	font-weight: 400;
+.progress {
+	margin: 0;
+	
+	> .bar {
+		transition: width 0.1s;
+	}
 }
 
 .row-fluid > div {
@@ -96,7 +100,7 @@ var {
 ///////////////////////////////////////////////////////////////////////////////
 // list
 ///////////////////////////////////////////////////////////////////////////////
-.directory-item {
+.list-item {
 	border-bottom: 1px dashed transparent;
 	color: @textColor;
 	display: block;
@@ -110,20 +114,22 @@ var {
 		color: @textColor;
 		outline: 0;
 		
-		> .directory-item-path > button {
+		> .list-item-path > button {
 			.close();
 		}
 	}
 }
 
-.directory-item-name > h4,
-.directory-item-path > span {
+.list-item-name > h4,
+.list-item-path > span {
 	line-height: (@baseLineHeight * 1.1);
 	margin: 0;
 	.text-overflow();
 }
 
-.directory-item-path {
+.list-item-path {
+	height: (@baseLineHeight * 1.1);
+	
 	> span {
 		display: inline-block;
 		width: ~"calc(100% - 12px - @{fluidGridGutterWidth})";
@@ -139,11 +145,64 @@ var {
 ///////////////////////////////////////////////////////////////////////////////
 // item
 ///////////////////////////////////////////////////////////////////////////////
-#directory-contacts {
-	height: 139px;
+.item-contact {
+	box-sizing: border-box;
+	display: inline-block;
+	margin-bottom: 0;
+	width: ((100% / 5) - (@fluidGridGutterWidth * (4 / 5)));
+	
+	&:nth-child(n+6) {
+		margin-top: @fluidGridGutterWidth;
+	}
+	
+	&:not(:nth-child(5n+1)) {
+		margin-left: @fluidGridGutterWidth;
+	}
+	
+	&:last-child {
+		vertical-align: top;
+	}
+	
+	&:hover,
+	&:focus {
+		> input {
+			opacity: 1;
+		}
+	}
+	
+	> input {
+		float: right;
+		margin: 0;
+		opacity: 0;
+		transition: opacity 0.1s;
+	}
+	
+	> small {
+		display: inline-block;
+		width: 50%;
+	}
+}
+
+#item-contacts {
+	height: 159px;
 	overflow: auto;
 }
 
-#directory-send {
-	height: 40px;
+#item-send,
+#item-test,
+#item-status-bar,
+#item-cancel {
+	height: 50px;
+}
+
+#item-send {
+	width: 60%;
+}
+
+#item-test {
+	width: 40%;
+}
+
+#item-status {
+	display: none;
 }

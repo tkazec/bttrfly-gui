@@ -152,17 +152,17 @@ document.getElementById("root").addEventListener("click", function handle (evt) 
 	var elem = evt._target || evt.target;
 	var orig = evt.target;
 	
-	if (elem.id === "directory-create") {
+	if (elem.id === "list-create") {
 		document.getElementById("file-create").click();
-	} else if (elem.id === "directory-browse") {
+	} else if (elem.id === "list-browse") {
 		document.getElementById("file-browse").click();
-	} else if (elem.id === "directory-back") {
+	} else if (elem.id === "item-back") {
 		state.showDirectories();
-	} else if (elem.classList.contains("directory-item")) {
+	} else if (elem.classList.contains("list-item")) {
 		if (orig.classList.contains("close")) {
-			state.removeDirectory(elem.dataset.directory);
+			state.removeDirectory(elem.dataset.file);
 		} else {
-			state.openDirectory(elem.dataset.directory);
+			state.openDirectory(elem.dataset.file);
 		}
 	} else {
 		if (elem !== this) {
