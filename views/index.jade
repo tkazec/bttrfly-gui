@@ -23,10 +23,10 @@ if view === "item"
 	h4 Account
 	div.row-fluid
 		div.span4
-			input.span12#item-user(type="email", placeholder="User", value=data.user)
+			input.span12#item-user(type="email", placeholder="User", value=data.user, required)
 			span.help-block Email address you sign in to Google Voice with. Most likely your Gmail address.
 		div.span4
-			input.span12#item-pass(type="password", placeholder="Pass", value=opts.file.pass)
+			input.span12#item-pass(type="password", placeholder="Pass", value=opts.file.pass, required)
 			span.help-block Password you sign in to Google Voice with. If 2-step verification is on, use an application-specific password.
 		div.span4.text-center
 			label.checkbox.inline
@@ -57,7 +57,7 @@ if view === "item"
 			small (<span id="item-compose-count">160</span>)
 		div.row-fluid
 			div.span8
-				textarea#item-compose-text(rows="2")
+				textarea#item-compose-text(rows="2", required)
 			div.span4
 				div.span12.btn-group.btn-group
 					button.btn.btn-large#item-send Send

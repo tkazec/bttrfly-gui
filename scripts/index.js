@@ -10,7 +10,8 @@ var less = require("less");
 var path = require("path");
 
 var state = {
-	directories: {}
+	directories: {},
+	directory: null
 };
 
 var f = ff(function () {
@@ -106,15 +107,26 @@ state.openDirectory = function (path) {
 		state.directories[path] = state.directories[path] || true;
 		state.saveDirectories();
 		
+		state.directory = state.directories[path];
+		state.directory.data = directory;
+		
 		state.showView("item", {
-			title: state.directories[path].name,
-			file: state.directories[path]
+			title: state.directory.name,
+			file: state.directory
 		}, directory);
 	}).onError(function (err) {
 		delete state.directories[path];
 		state.saveDirectories();
 		state.showDirectories();
 		document.getElementById("file-browse").click();
+	});
+};
+
+state.saveDirectory = function () {
+	var f = ff(function () {
+		fs.writeFile(state.directory.file, JSON.stringify(state.directory.data, null, "\t"), f.wait());
+	}).onError(function (err) {
+		console.log(err);
 	});
 };
 
@@ -157,6 +169,7 @@ document.getElementById("root").addEventListener("click", function handle (evt) 
 	} else if (elem.id === "list-browse") {
 		document.getElementById("file-browse").click();
 	} else if (elem.id === "item-back") {
+		state.saveDirectories();
 		state.showDirectories();
 	} else if (elem.classList.contains("list-item")) {
 		if (orig.classList.contains("close")) {
@@ -169,5 +182,28 @@ document.getElementById("root").addEventListener("click", function handle (evt) 
 			evt._target = elem.parentNode;
 			handle.call(this, evt);
 		}
+	}
+}, false);
+
+document.getElementById("root").addEventListener("change", function handle (evt) {
+	var elem = evt.target;
+	
+	if (elem.id === "item-user" || elem.id === "item-pass" || elem.id === "item-pass-save") {
+		var user = document.getElementById("item-user").value;
+		var pass = document.getElementById("item-pass").value;
+		var save = document.getElementById("item-pass-save").checked;
+		
+		state.directory.data.user = user;
+		state.directory.pass = save ? pass : null;
+		
+		state.saveDirectory();
+	}
+}, false);
+
+document.getElementById("root").addEventListener("input", function handle (evt) {
+	var elem = evt.target;
+	
+	if (elem.id === "item-compose-text") {
+		document.getElementById("item-compose-count").textContent = 160 - elem.value.length;
 	}
 }, false);
