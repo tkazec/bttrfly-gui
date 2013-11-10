@@ -11,7 +11,9 @@ var path = require("path");
 
 var state = {
 	directories: {},
-	directory: null
+	template: null,
+	directory: null,
+	message: null
 };
 
 var f = ff(function () {
@@ -171,6 +173,15 @@ document.getElementById("root").addEventListener("click", function handle (evt) 
 	} else if (elem.id === "item-back") {
 		state.saveDirectories();
 		state.showDirectories();
+	} else if (elem.id === "item-send") {
+		document.getElementById("root").innerHTML += state.template({
+			view: "send",
+			total: 10
+		});
+	} else if (elem.id === "item-test") {
+		
+	} else if (elem.id === "item-cancel") {
+		
 	} else if (elem.classList.contains("list-item")) {
 		if (orig.classList.contains("close")) {
 			state.removeDirectory(elem.dataset.file);

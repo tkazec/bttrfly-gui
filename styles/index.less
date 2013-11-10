@@ -79,12 +79,18 @@ var {
 	text-align: justify;
 }
 
-.progress {
-	margin: 0;
-	
-	> .bar {
-		transition: width 0.1s;
-	}
+.modal {
+	bottom: 10%;
+}
+
+.modal-body {
+	box-sizing: border-box;
+	height: 100%;
+	max-height: initial;
+}
+
+.progress > .bar {
+	transition: width 0.1s;
 }
 
 .row-fluid > div {
@@ -188,21 +194,36 @@ var {
 	overflow: auto;
 }
 
-#item-send,
-#item-test,
-#item-status-bar,
-#item-cancel {
-	height: 50px;
-}
-
 #item-send {
+	height: 50px;
 	width: 60%;
 }
 
 #item-test {
+	height: 50px;
 	width: 40%;
 }
 
-#item-status {
-	display: none;
+
+///////////////////////////////////////////////////////////////////////////////
+// send
+///////////////////////////////////////////////////////////////////////////////
+#send-title {
+	margin: 0 0 15px 0;
+}
+
+#send-bar {
+	height: 30px;
+	margin: 0 15px 0 0;
+	width: ~"calc(80% - 15px)";
+}
+
+#send-cancel {
+	width: 20%;
+}
+
+#send-log {
+	height: ~"calc(100% - 110px)";
+	margin: 15px 0 0 0;
+	overflow: auto;
 }

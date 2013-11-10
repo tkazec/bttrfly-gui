@@ -62,13 +62,13 @@ if view === "item"
 				div.span12.btn-group.btn-group
 					button.btn.btn-large#item-send Send
 					button.btn#item-test Test
-	
-	div#item-status
-		h4
+
+if view === "send"
+	div.modal-backdrop
+	div.modal: div.modal-body
+		h4#send-title
 			| Sending... 
-			small (<span id="item-status-count"></span> of <span id="item-status-total"></span>)
-		div.row-fluid
-			div.span8
-				div.progress.progress-info#item-status-bar: div.bar
-			div.span4
-				button.btn.btn-large.btn-block#item-cancel Cancel
+			small (<span id="send-count">0</span> of #{total})
+		div.progress.progress-striped.active.pull-left#send-bar: div.bar
+		button.btn#send-cancel Cancel
+		div.alert.alert-block.alert-info#send-log
