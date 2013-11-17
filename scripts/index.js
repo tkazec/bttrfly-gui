@@ -13,7 +13,7 @@ var state = {
 	directories: {},
 	template: null,
 	directory: null,
-	message: null
+	sending: false
 };
 
 var f = ff(function () {
@@ -140,6 +140,63 @@ state.removeDirectory = function (path) {
 	}
 };
 
+state.sendMessage = function (test) {
+	var count = 0;
+	var total = state.directory.data.contacts.reduce(function (pre, cur) {
+		return pre + !cur.skip;
+	}, 0);
+	
+	state.sending = true;
+	
+	document.getElementById("root").innerHTML += state.template({
+		view: "send",
+		total: total
+	});
+	
+	var cur = document.getElementById("send-count");
+	var bar = document.getElementById("send-bar").children[0];
+	var log = document.getElementById("send-log");
+	
+	bttrfly({
+		user: state.directory.data.user,
+		pass: document.getElementById("item-pass").value,
+		tokens: state.directory.data.tokens,
+		contacts: state.directory.data.contacts,
+		message: document.getElementById("item-compose-text").value,
+		dry: test
+	}, function (err, contact) {
+		if (!state.sending) {
+			return false;
+		}
+		
+		cur.textContent = ++count;
+		bar.style.width = ((count / total) * 100) + "%";
+		log.textContent += err
+			? (test ? "Would text " : "Error texting ") + contact.phone + ": " + err + ".\n"
+			: "Texted " + contact.phone + ".\n";
+		log.scrollTop = log.scrollHeight;
+	}, function (err, tokens) {
+		if (err) {
+			log.textContent += "Error: " + err + ".\n";
+		}
+		
+		if (!test) {
+			state.directory.data.tokens = tokens;
+		}
+		
+		document.getElementById("send-stop").textContent = "Close";
+		log.textContent += test ? "Texts simulated!" : "Texts sent!";
+		log.scrollTop = log.scrollHeight;
+	});
+};
+
+state.stopMessage = function () {
+	state.sending = false;
+	
+	document.getElementsByClassName("modal")[0].remove();
+	document.getElementsByClassName("modal-backdrop")[0].remove();
+};
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // events
@@ -174,14 +231,11 @@ document.getElementById("root").addEventListener("click", function handle (evt) 
 		state.saveDirectories();
 		state.showDirectories();
 	} else if (elem.id === "item-send") {
-		document.getElementById("root").innerHTML += state.template({
-			view: "send",
-			total: 10
-		});
+		state.sendMessage(false);
 	} else if (elem.id === "item-test") {
-		
-	} else if (elem.id === "item-cancel") {
-		
+		state.sendMessage(true);
+	} else if (elem.id === "send-stop") {
+		state.stopMessage();
 	} else if (elem.classList.contains("list-item")) {
 		if (orig.classList.contains("close")) {
 			state.removeDirectory(elem.dataset.file);
