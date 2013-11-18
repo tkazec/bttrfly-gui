@@ -141,6 +141,19 @@ state.removeDirectory = function (path) {
 };
 
 state.sendMessage = function (test) {
+	var options = {
+		user: state.directory.data.user,
+		pass: document.getElementById("item-pass").value,
+		tokens: state.directory.data.tokens,
+		contacts: state.directory.data.contacts,
+		message: document.getElementById("item-compose-text").value,
+		dry: test
+	};
+	
+	if (!options.user || !options.pass || !options.contacts || !options.message) {
+		return;
+	}
+	
 	var count = 0;
 	var total = state.directory.data.contacts.reduce(function (pre, cur) {
 		return pre + !cur.skip;
@@ -148,23 +161,16 @@ state.sendMessage = function (test) {
 	
 	state.sending = true;
 	
-	document.getElementById("root").innerHTML += state.template({
+	document.getElementById("root").insertAdjacentHTML("beforeend", state.template({
 		view: "send",
 		total: total
-	});
+	}));
 	
 	var cur = document.getElementById("send-count");
 	var bar = document.getElementById("send-bar").children[0];
 	var log = document.getElementById("send-log");
 	
-	bttrfly({
-		user: state.directory.data.user,
-		pass: document.getElementById("item-pass").value,
-		tokens: state.directory.data.tokens,
-		contacts: state.directory.data.contacts,
-		message: document.getElementById("item-compose-text").value,
-		dry: test
-	}, function (err, contact) {
+	bttrfly(options, function (err, contact) {
 		if (!state.sending) {
 			return false;
 		}
@@ -172,8 +178,8 @@ state.sendMessage = function (test) {
 		cur.textContent = ++count;
 		bar.style.width = ((count / total) * 100) + "%";
 		log.textContent += err
-			? (test ? "Would text " : "Error texting ") + contact.phone + ": " + err + ".\n"
-			: "Texted " + contact.phone + ".\n";
+			? (test ? "Would text " : "Error texting ") + contact.phone + ": " + err + "\n"
+			: "Texted " + contact.phone + "\n";
 		log.scrollTop = log.scrollHeight;
 	}, function (err, tokens) {
 		if (err) {
