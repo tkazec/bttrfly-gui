@@ -2,12 +2,12 @@ if view === "list"
 	h2
 		| Directories 
 		small
-			a#list-create(href="#") create
+			a#list-create(href="#0") create
 			|  / 
-			a#list-browse(href="#") browse
+			a#list-browse(href="#0") browse
 	
 	each file in data
-		a.row-fluid.list-item(href="#", data-file=file.file)
+		a.row-fluid.list-item(href="#0", data-file=file.file)
 			div.span4.list-item-name
 				h4(title=file.name) #{file.name}
 			div.span8.list-item-path
@@ -18,7 +18,7 @@ if view === "item"
 	h2
 		| #{opts.file.name} 
 		small
-			a#item-back(href="#") back
+			a#item-back(href="#0") back
 	
 	h4 Account
 	div.row-fluid
@@ -36,7 +36,10 @@ if view === "item"
 	
 	h4
 		| Contacts 
-		small (<span id="item-contacts-count">#{data.contacts.length}</span>)
+		small
+			span#item-contacts-count #{data.contacts.length}
+			|  / 
+			a(href="#0") add
 	div#item-contacts
 		each contact, index in data.contacts
 			div.well.well-small.item-contact(class=contact.skip && "muted", data-index=index)
@@ -47,14 +50,12 @@ if view === "item"
 					unless key === "phone" || key === "skip"
 						small.text-right #{key}:
 						small.text-left #{val}
-		
-		div.item-contact
-			button.btn.btn-large.text-center +
 	
 	div#item-compose
 		h4
 			| Message 
-			small (<span id="item-compose-count">160</span>)
+			small
+				span#item-compose-count 160
 		div.row-fluid
 			div.span8
 				textarea#item-compose-text(rows="2", required)
@@ -68,7 +69,9 @@ if view === "send"
 	div.modal: div.modal-body
 		h4#send-title
 			| Sending... 
-			small (<span id="send-count">0</span> of #{total})
+			small
+				span#send-count 0
+				|  of #{total}
 		div.progress.progress-striped.active.pull-left#send-bar: div.bar
 		button.btn#send-stop Stop
 		pre.alert.alert-block.alert-info#send-log
