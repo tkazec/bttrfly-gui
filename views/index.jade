@@ -1,3 +1,14 @@
+mixin item-contacts()
+	each contact, index in data.contacts
+		div.well.well-small.item-contact(class=contact.skip && "muted", data-index=index)
+			var #{contact.phone}
+			input(type="checkbox", tabindex="-1", checked=!contact.skip)
+			
+			each val, key in contact
+				unless key === "phone" || key === "skip"
+					small.text-right #{key}:
+					small.text-left #{val}	
+
 if view === "list"
 	h2
 		| Directories 
@@ -41,15 +52,7 @@ if view === "item"
 			|  / 
 			a(href="#0") add
 	div#item-contacts
-		each contact, index in data.contacts
-			div.well.well-small.item-contact(class=contact.skip && "muted", data-index=index)
-				var #{contact.phone}
-				input(type="checkbox", tabindex="-1", checked=!contact.skip)
-				
-				each val, key in contact
-					unless key === "phone" || key === "skip"
-						small.text-right #{key}:
-						small.text-left #{val}
+		+item-contacts()
 	
 	div#item-compose
 		h4
@@ -63,6 +66,9 @@ if view === "item"
 				div.span12.btn-group.btn-group
 					button.btn.btn-large#item-send Send
 					button.btn#item-test Test
+
+if view === "item-contacts"
+	+item-contacts()
 
 if view === "send"
 	div.modal-backdrop

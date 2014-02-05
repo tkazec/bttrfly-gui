@@ -188,6 +188,8 @@ state.sendMessage = function (test) {
 		
 		if (!test) {
 			state.directory.data.tokens = tokens;
+			
+			state.saveDirectory();
 		}
 		
 		document.getElementById("send-stop").textContent = "Close";
@@ -257,7 +259,8 @@ document.getElementById("root").addEventListener("click", function handle (evt) 
 }, false);
 
 document.getElementById("root").addEventListener("change", function handle (evt) {
-	var elem = evt.target;
+	var elem = evt._target || evt.target;
+	var orig = evt.target;
 	
 	if (elem.id === "item-user" || elem.id === "item-pass" || elem.id === "item-pass-save") {
 		var user = document.getElementById("item-user").value;
@@ -268,6 +271,17 @@ document.getElementById("root").addEventListener("change", function handle (evt)
 		state.directory.pass = save ? pass : null;
 		
 		state.saveDirectory();
+	} else if (elem.classList.contains("item-contact")) {
+		elem.classList.toggle("muted", !orig.checked);
+		
+		state.directory.data.contacts[elem.dataset.index].skip = orig.checked ? undefined : true;
+		
+		state.saveDirectory();
+	} else {
+		if (elem !== this) {
+			evt._target = elem.parentNode;
+			handle.call(this, evt);
+		}
 	}
 }, false);
 
