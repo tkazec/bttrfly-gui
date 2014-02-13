@@ -1,8 +1,8 @@
 mixin item-contacts()
 	each contact, index in data.contacts
 		div.well.well-small.item-contact(class=contact.skip && "muted", data-index=index)
-			var #{contact.phone}
 			input(type="checkbox", tabindex="-1", checked=!contact.skip)
+			div: var #{contact.phone}
 			
 			each val, key in contact
 				unless key === "phone" || key === "skip"
