@@ -182,6 +182,12 @@ state.sendMessage = function (test) {
 			: "Texted " + contact.phone + "\n";
 		log.scrollTop = log.scrollHeight;
 	}, function (err, tokens) {
+		if (state.sending) {
+			state.sending = false;
+		} else {
+			return;
+		}
+		
 		if (err) {
 			log.textContent += "Error: " + err + ".\n";
 		}
