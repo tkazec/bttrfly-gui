@@ -3,7 +3,6 @@
 
 SRCDIR="$( cd "$( dirname "$0" )" && pwd )"
 TMPDIR=$SRCDIR/temp
-ALLDIR=$SRCDIR/../..
 OUTDMG=$1
 
 mkdir $TMPDIR
@@ -14,9 +13,7 @@ mv $TMPDIR/node-webkit.app $TMPDIR/bttrfly.app
 
 cp $SRCDIR/Info.plist $TMPDIR/bttrfly.app/Contents
 cp $SRCDIR/nw.icns $TMPDIR/bttrfly.app/Contents/Resources
-
-mkdir $TMPDIR/bttrfly.app/Contents/Resources/app.nw
-cp -R $ALLDIR/scripts $ALLDIR/styles $ALLDIR/views $ALLDIR/index.html $ALLDIR/package.json $TMPDIR/bttrfly.app/Contents/Resources/app.nw
+rsync -a --exclude .git --exclude builds $SRCDIR/../.. $TMPDIR/bttrfly.app/Contents/Resources/app.nw
 
 hdiutil create -ov -srcfolder $TMPDIR/bttrfly.app $OUTDMG
 
